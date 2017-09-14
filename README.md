@@ -5,7 +5,7 @@ Repository for HW assignments of Stat 133 (Fall 2017)
 - Student name: Pinshuo Ye
 - Github username: yepinshuo
 - Lab section: 104
-- GSI: Xiaoqi
+- GSI: Xiaoqi Zhang
 
 -----
 
