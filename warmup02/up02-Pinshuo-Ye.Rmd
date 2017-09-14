@@ -1,0 +1,122 @@
+---
+title: "Untitled"
+author: "Pinshuo Ye"
+date: "9/10/2017"
+output: github_document
+---
+
+## Downloading Rdata from the Internet
+
+Here we download the Rdata to the computer.
+
+```{r}
+# assembling url (so it fits on the screen)
+github <- 'https://github.com/ucb-stat133/stat133-hws-fall17/'
+repo <- 'raw/master/warmup02/data/nba2017-salary-points.RData'
+
+download.file(
+  url = paste0(github, repo),
+  destfile = "nba2017-salary-points.RData")
+```
+
+## Loading the data
+
+Loading the data and it will shows the list of values on the right.
+
+```{r}
+# load the objects
+load("nba2017-salary-points.RData")
+
+# list the available objects
+ls()
+```
+
+## Data Analysis
+
+### Quantitive Data
+
+This is a simple analysis of the quantitive data and the simple graphs.
+
+```{r}
+# This is the basic information of the list 'points'
+summary(points)
+mean(points)
+sd(points, na.rm = FALSE)
+min(points)
+max(points)
+median(points)
+quantile(points)
+
+```
+
+* This is the basic information about quantitive data "points". 
+* Using the summery() function could create a table that shows the quartiles and means of the vector. The center of the data could be discribed in two ways, meadian and mean. The center median show the average level of the players, while the mean is the average of the players` points. 
+* The spread of the data is relatively big, since the standard deviation of the data "points" is about 489. 
+* And the max value of the vector could be considered as an outlier, because the difference between the max and the mean is about 4 standard deviation.
+
+```{r}
+# Creating the histiogram and images
+hist(points)
+boxplot(points)
+```
+
+* The histogram of the "points" shows the frequency distribution of the vector, and the boxplot shows the quartiles of the vector.
+* The shaoe of the histogram is not symmetric, but it skewed to the right.
+* This graph can approximately show the median.
+* Using the boxplot and the histogram can see the range of the data.
+* We can find out the outliers using the boxplot, is approximately over 1800.
+
+```{r}
+# This is the basic information of the list 'points'
+summary(points1)
+mean(points1)
+sd(points1, na.rm = FALSE)
+min(points1)
+max(points1)
+median(points1)
+quantile(points1)
+```
+
+* This is the basic summery data of the "points1", which is the free throw of the players. 
+* The center of the data is median and mean: the median of the data represents the average level of the player`s free throws; while the mean of the data represents the average points that player could get. 
+* The spread of the data is fairly big, since the standard deviation is large, comparing to the mean value of the data. 
+* The max number could be considered as the outlier, since the difference between the max number and the mean is about 6 standard deviation.
+
+
+### Quanlitative variable
+
+This is an analysis about the data of categories, which is about the position of the players.
+
+```{r}
+# Picking one of the qualitative data
+# making the vector a factor
+factor(position)
+
+# making the frequency table
+table(position)
+#get the relative frequency
+position.freq = table(position)
+position.relfreq = position.freq/length(position)
+position.relfreq
+
+#barchart
+barplot(table(position))
+```
+
+* It is hard to tell the shape of the barchart, since the number of each position is alomost the same.
+* This is not a quantitive data, so there is no way to organize the data type and order them from the largest to the smallest. Then the data "position" has no center.
+* The spread is hard to find since there is no standard deviation.
+* There are no outliers in the qualitative data.
+
+
+## Process Report
+
+* It is a little bit challenging when we trying to transform the frequency table to relative frequency table, because we cannot just simply divide the table by the length of the vector.
+* Everything else is easy, since most of the functions we use to deal with the data could be found by searching.
+* There is no error in this section, but if I have some error about the ploting the graph, it may hard to fix.
+* The most time-consuming part is writing the comment and analysis of the graph, because comparing with creating data and sketch the graph, writing comment taking up more time.
+
+
+
+
+
