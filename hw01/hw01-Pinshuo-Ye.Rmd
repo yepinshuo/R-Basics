@@ -5,26 +5,233 @@ date: "9/21/2017"
 output: github_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+#### Data
+The data objects for this assignment are in the file nba2017-salary-points.RData, inside the data folder of the hw01 directory of your stat133-hws-fall17 repo. There is also the data dictionary file nba2017-salary-points-dictionary.md.
+
+#### Importing the data
+You don¡¯t need to download any data file (since it¡¯s already in your local repository). To import the data, you just need to use load(). Assuming that your Rmd file is already saved inside the hw01 folder, you can load the .RData file with the following command (put it inside a code chunk): 
+
+```{r}
+# load data file 
+load("data/nba2017-salary-points.RData") 
 ```
 
-## R Markdown
+Call ls() to list the objects contained in the .RData:
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+# list the available objects
+ls()
 ```
 
-## Including Plots
+### Research Question
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+#### 1) A bit of data preprocessing
+
+```{r}
+# create a new salary variable measured in millions of dollars, up to 2 decimal digits
+salary_millions <- salary/1000000
+salary_millions <- as.numeric(salary_millions, nsmall = 2)
+
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+#replace all the R value to character 0
+experience <- replace(experience, experience[] == "R", "0")
+
+#change all the character to integer value
+experience_int <- as.integer(experience)
+experience_int
+```
+
+```{r}
+# create a new factor based on the vector position
+position1 <- as.factor(position)
+
+# change the level name of the factor
+levels(position1) <- c("center", "power_fwd", "point_guard", "small_fwd", "shoot_guard")
+position1
+
+# compute the frequencies 
+table(position1)
+```
+
+
+#### 2) Scatterplot of Points and Salary
+
+```{r}
+# plot the point and salary
+plot(points, salary_millions, xlab = "Points", ylab = "Salary(millions)", main = "Scatterplot of Points and Salary", col = 2, pch = 1, cex = 1.2)
+```
+
+
+#### 3) Correlation between Points and Salary 
+
+```{r}
+# find the length of the vectors
+len_points <- length(points)
+len_salary <- length(salary_millions)
+
+# find the mean value of points and salary
+mean_points <- sum(points)/len_points
+mean_salary <- sum(salary_millions)/len_salary
+
+# find the variance of points and salary
+var_points <- 1/(len_points - 1) * sum((points - mean_points)^2, na.rm = FALSE)
+var_salary <- 1/(len_salary - 1) * sum((salary_millions - mean_salary)^2, na.rm = FALSE)
+
+# find the standard deviation of the two vectors
+sd_points <- sqrt(var_points)
+sd_salary <- sqrt(var_salary)
+
+# find the covariance of points and salary
+cov_pts_slry <- 1/(len_points - 1) * sum((points - mean_points) * (salary_millions - mean_salary), na.rm = FALSE)
+
+# display the covariance
+cov_pts_slry
+
+# find the correlation between two variables
+cor_pts_slry <- cov_pts_slry/(sd_points * sd_salary)
+
+# display the correlation
+cor_pts_slry
+
+
+```
+
+
+#### 4) Simple Linear Regression
+
+```{r}
+# find the slope of the linear regression
+slope <- cor_pts_slry * sd_salary / sd_points
+
+# find the intercept of the linear regression
+intercept <- mean_salary - slope * mean_points
+
+# find the vector of predicted values 
+y_hat <- intercept + slope * points
+
+summary(y_hat)
+
+```
+
+* The b0 is the rate of change of the linear regression. It shows that when the line of variable x(points) move to the right for one unit, the graph goes up for the number of the slope.
+
+* The b1 is called the intercept of the linear regression. It shows that when the horizontal variable x(points) is 0, the value of the intercept is where the line is intercept to the y-axis(salary).
+
+* The predicted salary for 0 points is `r intercept + slope * 0` million dollars.
+* The predicted salary for 100 points is `r intercept + slope * 100` million dollars.
+* The predicted salary for 500 points is `r intercept + slope * 500` million dollars.
+* The predicted salary for 1000 points is `r intercept + slope * 1000` million dollars.
+* The predicted salary for 2000 points is `r intercept + slope * 2000` million dollars.
+
+
+#### 5) Plotting the regression line
+
+```{r}
+# plot the point and salary, with linear regression
+plot(points, salary_millions, xlab = "Points", ylab = "Salary(millions)", main = "Scatterplot of Points and Salary", col = 1, pch = 1, cex = 1.2, abline(intercept, slope, col = 4, lwd = 3) )
+
+# adding text
+text(2400, 19, "Regression", col = 4, lwd = 2)
+
+# adding another line with smooth regression
+lines(lowess(points, salary_millions), col = 2, lwd = 3)
+
+# adding text
+text(2450, 30, "Lowess", col = 2, lwd = 2)
+
+```
+
+
+#### 6) Regression residuals and Coefficient of Determination $R^2$
+
+```{r}
+# create the vector of residuals
+res_ei <- salary_millions - y_hat
+summary(res_ei)
+
+# create the RSS
+RSS = sum(res_ei^2)
+RSS
+
+# Create the TSS
+TSS = sum((salary_millions - mean_salary)^2)
+TSS
+
+# Create the coefficient of determinant
+Rsquare = 1 - RSS/TSS
+Rsquare
+```
+
+#### 7) Exploring Position and Experience
+
+```{r}
+# using basic functions to get the linear regression function of experience and salary
+len_experience <- length(experience_int)
+mean_experience <- sum(experience_int)/len_experience
+var_experience <- 1/(len_experience - 1) * sum((experience_int - mean_experience)^2, na.rm = FALSE)
+sd_experience <- sqrt(var_experience)
+
+cov_exp_slry <- 1/(len_experience - 1) * sum((experience_int - mean_experience) * (salary_millions - mean_salary), na.rm = FALSE)
+
+cov_exp_slry
+
+cor_exp_slry <- cov_exp_slry/(sd_experience * sd_salary)
+
+cor_exp_slry
+
+slope1 <- cor_exp_slry * sd_salary / sd_experience
+
+intercept1 <- mean_salary - slope1 * mean_experience
+
+y_hat1 <- intercept1 + slope1 * experience_int
+
+# A scatterplot of Years-of-Experience and Salary
+plot(experience, salary_millions, xlab = "Experience", ylab = "Salary(millions)", main = "Scatterplot with lowess smooth", col = 1, pch = 1, cex = 1)
+
+#The Linear regression line
+lines(lowess(experience_int, salary_millions), col = 2, lwd = 3)
+
+```
+
+* The scatterplot shows that the relationship between the player`s experience in the league and their salary. It indicates that the players with 6-8 years have the hightst salary. The rookies have the lowest salary, and the with the experience getting bigger than 10 years, the salary is getting lower.
+
+
+```{r}
+library(scatterplot3d)
+scatterplot3d(points, experience_int, salary_millions, xlab = "Points", ylab = "Experience(Years)", zlab = "Salary(Millions)", main = "3D scatterplot", color = 2, cex.symbols = 1.2)
+```
+
+* It shows that the salary has a relevant relationship with points and experience, and the relationship is positive direct. Players with high points and longer experience have the highest salary.
+
+
+```{r}
+#create the boxplot of the position and salary
+table(position1)
+boxplot(salary_millions~position1, xlab = "Position", ylab = "Salary(millions)")
+
+```
+
+* This boxplot cannot obviously show the relationship between the position and salary, but we can conclude that the small forwards and the centers have  higher salary.
+
+#### 8) Comments and Reflections
+
+* The inline code took me much more time to think about even we learned it in the class. I have to be clear about how to use the inline code before I start to write the code.
+
+* Creating the plot and try every parameters is easy, I can just change the number of the parameters to understand what it means.
+
+* Git is convenient and useful, so is Github.
+
+* Yes. I have to ask my classmates for some package installing issues.
+
+* The homework took me 4 hours but I think I could save a lot of time next time.
+
+* Solving the issues of installing packages is the most time consuming part.
+
+* There is nothing that I don`t understand about this homework.
+
+* Showing the scatterplot is the greatest part, because the graph and the dots make me realize how important the data visualization is. 
+
+
