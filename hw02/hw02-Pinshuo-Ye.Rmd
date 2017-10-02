@@ -1,0 +1,163 @@
+---
+title: "hw02-Pinshuo-Ye"
+author: "Pinshuo Ye"
+date: "9/27/2017"
+output: github_document
+---
+
+### Download the data
+
+### 1) Create a data dictionary
+
+### 2) Import the data in R 
+
+```{r}
+# Creating the data table and change the vector type
+library(readr)
+dat <- data.frame(read.csv("C:\\Users\\pinshuo\\stat133\\stat133-hws-fall17\\hw02\\data\\nba2017-player-statistics.csv", colClasses = c(
+  "Player" = "character",
+  "Team" = "character",
+  "Experience" = "character",
+  "Salary" = "numeric") ))
+str(dat)
+```
+
+```{r}
+# Creating the data table and change the vector type
+library(readr)
+dat <- data.frame(read_csv("C:\\Users\\pinshuo\\stat133\\stat133-hws-fall17\\hw02\\data\\nba2017-player-statistics.csv", col_types = cols(
+  Player = col_character(),
+  Team = col_character(), 
+  Experience = col_character(),
+  Position = col_factor(c("C", "PF", "PG", "SG", "SF"), ordered = FALSE),
+  Salary = col_double()
+)))
+
+str(dat)
+```
+
+
+### 3) Right after importing the data 
+```{r}
+# Replacing the experience column
+dat$Experience
+dat$Experience[dat$Experience == "R"] <- "0"
+dat$Experience <- as.integer(dat$Experience)
+dat$Experience
+```
+
+
+### 4) Performance of players 
+```{r}
+# calculating the EFF for every player
+# first creating some related variables
+missed_fg <- dat$FGA - dat$FGM
+missed_ft <- dat$FTA - dat$FTM
+PTS <- dat$FTM * 1 + dat$Points2 * 2 + dat$Points3 * 3
+REB <- dat$OREB + dat$DREB
+MPG <- dat$MIN/dat$GP
+
+EFF <- (PTS + REB + dat$AST + dat$STL + dat$BLK - missed_fg - missed_ft - dat$TO) / dat$GP 
+EFF
+#showing the summary of the eff
+summary(EFF)
+
+#combine the dat to the eff as a new data frame
+dat <- cbind(dat, EFF)
+
+#creating the histogram
+hist(EFF, main = "Histogram of Efficiency (EFF)")
+```
+
+```{r}
+# display the top 10 EFF
+library(dplyr)
+top10eff <- dat[ , c("Player", "Team", "Salary", "EFF")]
+top10eff <- arrange(top10eff, desc(EFF))
+slice(top10eff, 1:10)
+```
+
+```{r}
+# Finding players having negative EFF
+filter(dat[ , c("Player", "Team", "Salary", "EFF")], EFF < 0)
+```
+
+```{r}
+# Finding the coorelation coefficients between eff and other variables
+cor(x = EFF, y = PTS)
+cor(x = EFF, y = REB)
+cor(x = EFF, y = dat$AST)
+cor(x = EFF, y = dat$STL)
+cor(x = EFF, y = dat$BLK)
+cor(x = EFF, y = -missed_fg)
+cor(x = EFF, y = -missed_ft)
+cor(x = EFF, y = -dat$TO)
+cor(x = EFF, y = dat$GP)
+```
+
+```{r}
+#creating the barplot of the correlation coefficients
+cc <- c(cor(x = EFF, y = PTS),
+    cor(x = EFF, y = REB),
+    cor(x = EFF, y = dat$AST),
+    cor(x = EFF, y = dat$STL),
+    cor(x = EFF, y = dat$BLK),
+    cor(x = EFF, y = -missed_fg),
+    cor(x = EFF, y = -missed_ft),
+    cor(x = EFF, y = -dat$TO))
+
+cc <- sort(cc, decreasing = TRUE)
+cc
+barplot(cc, 
+        ylim = c(-1, 1), 
+        main = "Correlations between Player stats and EEF", 
+        names.arg = c("PTS", "REB", "STL", "AST", "BLK", "Missed_FT", "Missed_FG", "TO"),
+        col = ifelse((cc > 0), "grey", "red"),
+        cex.names = 0.71)
+```
+
+### 5) Effeciency and Salary 
+```{r}
+# making the scatterplot between eFf and salary, and their correlation coefficient
+plot(EFF, dat$Salary, 
+     col = 2, 
+     ylab = "Salary", 
+     main = "Scatterplot of EFF and Salary")
+lines(lowess(EFF, dat$Salary), col = 3, lwd = 3)
+
+cor(x = EFF, y = dat$Salary)
+```
+
+* The two variables, EFF and salary, have a positive relation. Looking at the scatterplot, it is approximately. The lowess showed that the salary increasing slower in the left part than the right part. It means that the the increasing rate of salary is higher when the player has high EFF.
+
+```{r}
+# Taking players that MPG is higher than 20 minutes
+library(dplyr)
+dat <- cbind(dat, MPG)
+player2 <- filter(dat, dat$MPG > 20)
+```
+
+```{r}
+# creating the scatterplot and the lowess line
+plot(player2$EFF, player2$Salary, 
+     col = 2,
+     xlab = "EFF",
+     ylab = "Salary", 
+     main = "Scatterplot of EFF and Salary of Over 20 minutes")
+lines(lowess(player2$EFF, player2$Salary), col = 4, lwd = 3)
+cor(player2$EFF, player2$Salary)
+```
+
+* For the more established players the lowess line is higher than all the player. It shows a more stable increasing comparing to the previous one.
+
+### 6) Comments and Reflections
+
+* The first part is hard, since I had some difficulty about writing the data dictionary and reading table.
+* The esay things is creating the plots.
+* I need some help from my classmates to solve some problems.
+* I took several hours to do the homework.
+* The first two questions is the most time consuming part.
+* I still need more research to get clear about the relationship between variables and salary.
+* I feel very exited to starting the data analysis about the NBA players.
+
+
