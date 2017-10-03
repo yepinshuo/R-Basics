@@ -41,7 +41,7 @@ str(dat)
 ```{r}
 # Replacing the experience column
 dat$Experience
-dat$Experience[dat$Experience == "R"] <- "0"
+dat$Experience[dat$Experience == "R"] <- "1"
 dat$Experience <- as.integer(dat$Experience)
 dat$Experience
 ```
@@ -66,7 +66,7 @@ summary(EFF)
 dat <- cbind(dat, EFF)
 
 #creating the histogram
-hist(EFF, main = "Histogram of Efficiency (EFF)")
+hist(EFF, main = "Histogram of Efficiency (EFF)", col = "grey")
 ```
 
 ```{r}
