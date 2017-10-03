@@ -41,7 +41,7 @@ str(dat)
 ```{r}
 # Replacing the experience column
 dat$Experience
-dat$Experience[dat$Experience == "R"] <- "1"
+dat$Experience[dat$Experience == "R"] <- "0"
 dat$Experience <- as.integer(dat$Experience)
 dat$Experience
 ```
