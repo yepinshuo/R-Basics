@@ -1,32 +1,24 @@
-hw04\_readme
+HW04\_readme
 ================
 Pinshuo Ye
 11/8/2017
 
-R Markdown
-----------
+Running shiny app in in Rstudio
+-------------------------------
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+In this assignment you’ll be working on a data set containing raw scores of ???ctitious students in a hypothetical Stat 133 course. Overall, this HW will give you the opportunity to work on a relatively small data computing and visualization project. By small we don’t mean simple; there’s actually a fair amount of complexity that you will have to deal with.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+From the user point of view, the main deliverable will be a shiny app to visualize:
 
-``` r
-summary(cars)
-```
+1.  the overall grade distribution,
 
-    ##      speed           dist       
-    ##  Min.   : 4.0   Min.   :  2.00  
-    ##  1st Qu.:12.0   1st Qu.: 26.00  
-    ##  Median :15.0   Median : 36.00  
-    ##  Mean   :15.4   Mean   : 42.98  
-    ##  3rd Qu.:19.0   3rd Qu.: 56.00  
-    ##  Max.   :25.0   Max.   :120.00
+2.  the distribution and summary statistics of various scores, and
 
-Including Plots
----------------
+3.  the relationships between pairs of scores.
 
-You can also embed plots, for example:
+From the developer point of vew, you will have to write a number of functions that help you process the data, and compute the required statistics. In addition, you will have to write unit tests for the programmed functions, which is an essential part of any programming task.
 
-![](README_files/figure-markdown_github-ascii_identifiers/pressure-1.png)
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+-   This home work is about writing functions, testing functions, data preparation and shiny app.
+-   The shiny web app is shown in this site.
+-   The most hard and time consuming part is the shiny app
+-   I think the shiny app is pretty challenging because there is not many relations with class.
