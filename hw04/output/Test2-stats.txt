@@ -1,0 +1,36 @@
+$minimum
+[1] 14
+
+$percent10
+[1] 22.6
+
+$quantile1
+[1] 63
+
+$median
+[1] 74
+
+$mean
+[1] 71.1003
+
+$quantile3
+[1] 83.5
+
+$percent90
+[1] 91.4
+
+$maximum
+[1] 100
+
+$range
+[1] 86
+
+$stdev
+[1] 17.47056
+
+$missing
+[1] 0
+
+ [1] minimum  : 14               percent10: 22.6             quantile1: 63               median   : 74              
+ [5] mean     : 71.1002994011976 quantile3: 83.5             percent90: 91.4             maximum  : 100             
+ [9] range    : 86               stdev    : 17.4705578130889 missing  : 0               
