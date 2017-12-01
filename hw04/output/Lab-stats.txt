@@ -1,0 +1,36 @@
+$minimum
+[1] 0
+
+$percent10
+[1] 10
+
+$quantile1
+[1] 100
+
+$median
+[1] 100
+
+$mean
+[1] 93.53293
+
+$quantile3
+[1] 100
+
+$percent90
+[1] 90
+
+$maximum
+[1] 100
+
+$range
+[1] 100
+
+$stdev
+[1] 19.45435
+
+$missing
+[1] 0
+
+ [1] minimum  : 0                percent10: 10               quantile1: 100              median   : 100             
+ [5] mean     : 93.5329341317365 quantile3: 100              percent90: 90               maximum  : 100             
+ [9] range    : 100              stdev    : 19.4543538843806 missing  : 0               

@@ -1,0 +1,28 @@
+rawscores\_dictionary
+================
+Pinshuo Ye
+11/25/2017
+
+Data Dictionary of the Grades of Stat 133 Class
+-----------------------------------------------
+
+### Data Dictionary:
+
+|  **Vector**|   **Meaning**  | **Total** |
+|-----------:|:--------------:|:----------|
+|         HW1|   Homework 1   | 100 pts   |
+|         HW2|   Homework 2   | 100 pts   |
+|         HW3|   Homework 3   | 100 pts   |
+|         HW4|   Homework 4   | 100 pts   |
+|         HW5|   Homework 5   | 100 pts   |
+|         HW6|   Homework 6   | 100 pts   |
+|         HW7|   Homework 7   | 100 pts   |
+|         HW8|   Homework 8   | 100 pts   |
+|         HW9|   Homework 9   | 100 pts   |
+|         ATT| Lab Attendence | 0 - 12    |
+|         QZ1|     Quiz 1     | 12 pts    |
+|         QZ2|     Quiz 2     | 18 pts    |
+|         QZ3|     Quiz 3     | 20 pts    |
+|         QZ4|     Quiz 4     | 20 pts    |
+|         EX1|     Exam 1     | 80 pts    |
+|         EX2|     Exam 2     | 90 pts    |

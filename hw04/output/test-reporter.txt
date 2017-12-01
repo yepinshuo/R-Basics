@@ -1,0 +1,20 @@
+Vector Operations: .....[1] "non-numeric argument"
+....[1] "non-numeric argument"
+....[1] "non-numeric argument"
+....[1] "non-numeric argument"
+....[1] "non-numeric argument"
+....[1] "non-numeric argument"
+....[1] "non-numeric argument"
+....[1] "non-numeric argument"
+....[1] "non-numeric argument"
+....[1] "non-numeric argument"
+....[1] "non-numeric argument"
+....[1] "non-numeric argument"
+..................[1] "non-numeric argument"
+.........[1] "invalid input"
+.[1] 100
+.[1] 60
+.[1] 0
+.
+
+DONE =================================================================================================================
