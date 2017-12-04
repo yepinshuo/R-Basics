@@ -1,0 +1,269 @@
+---
+title: "Post02: Introduction to package 'dygraphs'"
+author: "Pinshuo Ye"
+date: "2017/12/3"
+output: html_document
+---
+
+# Post 02: Introduction to package **_dygraphs_**
+####    -The basic use of the functions in **dygraph**
+
+### Introduction & Motivation
+
+The package **dygraphs** is an elegant and useful tool to draw graphs and presenting data. The data visualization of this package is similar to the package **ggplot2**, but dygraphs can do more things on time series and shows more details than ggplot2 does. The package dygraphs can "create HTML/JavaScript graphs of time series - one-line command if your data is an xts object". The graph drawn by the functions in dygraph can show the detail of every point on the graph by putting the cursor on specific point.
+
+Here is an brief example of the function **dygraph**:
+
+```{r}
+library(dygraphs)
+lungDeaths <- cbind(mdeaths, fdeaths)
+dygraph(lungDeaths, main = "The lungdeaths of male and female, 1975 - 1979")
+```
+
+This graph takes the value of a data frame, which is the lung death of male and female from 1975 to 1979. The graph is clear to show the tendency of the death through the time changes, and it is also easy to trace every point on the graph, just by putting the cursor on it. So this package is really a powerful and useful tool of data visualization.
+
+So using the package, we can do more things about analyzing data and presenting the data in a variety of ways.
+
+### Data Preparation
+
+To deal with the data by using dygraphs, we have to find the data first, and preparing the data:
+
+```{r}
+# reading the table of the stock price of alphabet company
+google <- read.csv("../data/GOOG.csv")
+```
+
+This is the stock price of goole from 2015 to 2017(Alphabet company), the data is daily stock price, with the price of opening, closing, high, low, and adjusted price. Dygraph package is a great way to deal with the time series in this data frame.
+
+```{r}
+# loading the file of the personal stats of Lebron James
+lbj03 <- read.csv("../data/lbj03.csv")
+lbj04 <- read.csv("../data/lbj04.csv")
+lbj05 <- read.csv("../data/lbj05.csv")
+lbj06 <- read.csv("../data/lbj06.csv")
+lbj07 <- read.csv("../data/lbj07.csv")
+lbj08 <- read.csv("../data/lbj08.csv")
+lbj09 <- read.csv("../data/lbj09.csv")
+lbj10 <- read.csv("../data/lbj10.csv")
+lbj11 <- read.csv("../data/lbj11.csv")
+lbj12 <- read.csv("../data/lbj12.csv")
+lbj13 <- read.csv("../data/lbj13.csv")
+lbj14 <- read.csv("../data/lbj14.csv")
+lbj15 <- read.csv("../data/lbj15.csv")
+lbj16 <- read.csv("../data/lbj16.csv")
+lbj17 <- read.csv("../data/lbj17.csv")
+lbj_career <- read.csv("../data/lbj_career.csv")
+```
+
+There are too many data frames, so we have to put them together first, and then we can extract any data we want, to do the graphing:
+
+```{r}
+library(stringr)
+# Put the data frames together
+lbj03 <- lbj03[ , 2:30]
+lbj04 <- lbj04[ , 2:30]
+lbj05 <- lbj05[ , 2:30]
+lbj06 <- lbj06[ , 2:30]
+lbj07 <- lbj07[ , 2:30]
+lbj08 <- lbj08[ , 2:30]
+lbj09 <- lbj09[ , 2:30]
+lbj10 <- lbj10[ , 2:30]
+lbj11 <- lbj11[ , 2:30]
+lbj12 <- lbj12[ , 2:30]
+lbj13 <- lbj13[ , 2:30]
+lbj14 <- lbj14[ , 2:30]
+lbj15 <- lbj15[ , 2:30]
+lbj16 <- lbj16[ , 2:30]
+lbj17 <- lbj17[ , 2:30]
+
+lbj <- rbind(lbj03, lbj04, lbj05, 
+             lbj06, lbj07, lbj08, 
+             lbj09, lbj10, lbj11, 
+             lbj12, lbj13, lbj14, 
+             lbj15, lbj16, lbj17)
+# Standardize data
+lbj$Date <- str_replace_all(lbj$Date, pattern = '/', replacement = '-')
+for(i in 1:1126){
+  if(nchar(lbj$Date[i]) == 8){
+    lbj$Date[i] <- 
+      paste0(substr(lbj$Date[i], 1, 5), "0", substr(lbj$Date[i], 6, 7), "0", substr(lbj$Date[i], 8, 8))
+  }else if(nchar(lbj$Date[i]) == 9){
+    if(substr(lbj$Date[i], 8, 8) == "-"){
+      lbj$Date[i] <- paste0(substr(lbj$Date[i], 1, 8), "0", substr(lbj$Date[i], 9, 9))
+    }else{
+      lbj$Date[i] <- paste0(substr(lbj$Date[i], 1, 5), "0", substr(lbj$Date[i], 6, 9))
+    }
+  }
+}
+```
+
+After loading the data, we need to make the data clean:
+```{r}
+#Cleaning data
+library(dplyr)
+lbj15 <- slice(lbj15, 1:82)
+lbj16 <- slice(lbj16, 1:82)
+```
+
+We can also take a peak at the first few line of some data frame:
+
+```{r}
+# head of the data frame
+head(google)
+head(lbj06)
+head(lbj12)
+```
+
+After dealing with the data, we can use dygraph to visualize the data.
+
+### Graphing
+
+To begin with, we can create a data frame with several variables, and then draw a simple graph like the first one:
+
+```{r}
+dat1 <- ts(data = select(google, Open, High, Low, Close), start = c(2015, 12), end = c(2017, 12), frequency = 12)
+dygraph(dat1, main = "Monthly stock price of Alphabet Company, Dec.2015 - Dec.2017")
+```
+
+This is the monthly stock price of google company within two years, and the data is from the yahoo finance website. To construct this kind of time series graph, the variable of x-axis a special variable called **timeSeries xts** variable. It present the monthly stock price with the order of time.
+
+This graph is quiet easy to show the details of the data, but when it come to large size of the data, the cursor cannot get every point accurately, so we need something to zoom in & out, and dygraphs provides this kind of tool. Note that it is similar as the function dplyr, using the **%>%** symbol to combine the seperate element of the graph.
+
+```{r}
+# putting a selector on the graph
+dygraph(dat1, main = "Monthly stock price of Alphabet Company, Dec.2015 - Dec.2017") %>% dyRangeSelector()
+```
+
+As we can see, with the tool of range selector, we can choose any part of the graph to inspect the data details, which is powerful and convenient.
+
+The way of using the symbol **%>%** is very important in this package dygraphs, since we can add multiple layers on the graph, so that adding more element on graph is a lot more easier.
+
+```{r}
+# Creating new graph with multiple layers
+dat1 <- select(google, High, Low)
+dat1$High <- dat1$High - dat1$Low
+dat1 <- ts(data = dat1, start = c(2015, 12), end = c(2017, 12), frequency = 12)
+dygraph(dat1, main = "Monthly stock price of Alphabet Company, Dec.2015 - Dec.2017") %>%
+  dySeries("High", label = "Highest price") %>%
+  dySeries("Low", label = "Lowest price") %>%
+  dyRangeSelector() %>%
+  dyOptions(stackedGraph = TRUE)
+```
+
+The graph is not elegant enough since the relative difference between high price and low price is too small, so we need to change the range of the axis:
+
+```{r}
+# change the range of the axis
+dygraph(dat1, main = "Monthly stock price of Alphabet Company, Dec.2015 - Dec.2017") %>%
+  dySeries("High", label = "Highest price") %>%
+  dySeries("Low", label = "Lowest price") %>%
+  dyRangeSelector() %>%
+  dyOptions(stackedGraph = TRUE) %>%
+  dyAxis("y", label = "Dollar($)", valueRange = c(700, 800))
+```
+
+Actually, there are multiple options to operate the graph, like step graph, filling, different shape of points and lines.
+* We can change the graph to step graphs.
+* The color below the graph can be filled.
+* The line can be changed to any shaple, in the given example, it is dashed line.
+* The point of the graph can be presented as any shape of point.
+
+```{r}
+# putting a selector on the graph
+dat1 <- ts(data = select(google, High, Low, Adj.Close), start = c(2015, 12), end = c(2017, 12), frequency = 12)
+dygraph(dat1, main = "Monthly stock price of Alphabet Company, Dec.2015 - Dec.2017") %>% 
+  dyRangeSelector() %>%
+  dySeries("High", drawPoints = TRUE, color = "blue", pointSize = 4) %>%
+  dySeries("Low", stepPlot = TRUE, fillGraph = TRUE, color = "red") %>%
+  dySeries("Adj.Close", strokeWidth = 2, strokePattern = "dashed", color = "green")
+```
+
+Users and viewers are always want to use the mouse to see the details of the point, so knowing the position of the mouse is also very important. Here is an useful tool that could highlight the graph when the mouse is putting on it.
+In the following example, the graph is shown as normal when the mouse is not putting on it; and when the mouse is putting on it, the selected graph will be highlighted, and other graphs are weakened.
+
+```{r}
+# Creating a highlighted graph
+dygraph(dat1, main = "Monthly stock price of Alphabet Company, Dec.2015 - Dec.2017") %>%
+  dyHighlight(highlightSeriesOpts = list(strokeWidth = 3))
+```
+
+There are still a lot of parameters that is related to the axis and the shape of the graph, and it is easy and interesting to explore. Here is some more useful tools, when people want to see the data more directly using the mouse, we can let the numbers follow the mouse using the function **dyLegend**.
+
+```{r}
+# following the mouse
+dat2 <- select(lbj, PTS, TRB, AST)
+dat2 <- as.matrix(dat2)
+rownames(dat2) <- lbj$Date
+dat2 <- ts(dat2[816:1126, ])
+
+dygraph(dat2, main = "Points in Lebron James` Last 300 Games") %>% 
+  dySeries("PTS", label = "Points") %>%
+  dyLegend(show = "follow") %>%
+  dyRangeSelector(strokeColor = "")
+
+dat2 <- ts(data = select(lbj_career, PTS, TRB, AST), start = 2003, end = 2017)
+dygraph(dat2, main = "Points in Lebron James` Career") %>% 
+  dySeries("PTS", label = "Points") %>%
+  dyLegend(show = "follow") %>%
+  dyRangeSelector(strokeColor = "")
+```
+
+As we can see that the mouse can show the points, assists and rebounds by Lebron James, and as the mouse move, the data moves as well.
+
+Here is also a very powerful tool for data analysis, especially for financial analysis and stock market price. Using the data of google, the price of everyday, including open, high, low and close is shown clearly by the function **dyCandlestick**
+
+```{r}
+library(xts)
+dat3 <- select(google, Open, High, Low, Close)
+dat3 <- as.matrix(dat3)
+rownames(dat3) <- google$Date
+dat3 <- tail(dat3, n = 100)
+dygraph(dat3)%>%
+  dyCandlestick()%>%
+  dyRangeSelector()
+```
+
+Using the candle bars is quite easy to show the tendency of the price as well as the daily high and low price.
+
+Last but not the least, we could use dygraph functions to create a barchart, even if the package is not included.
+
+```{r}
+library(quantmod)
+
+tickers <- c("AAPL", "MSFT")
+getSymbols(tickers)
+closePrices <- do.call(merge, lapply(tickers, function(x) Cl(get(x))))
+dateWindow <- c("2008-01-01", "2009-01-01")
+
+dygraph(closePrices, main = "Value", group = "stock") %>%
+  dyRebase(value = 100) %>%
+  dyRangeSelector(dateWindow = dateWindow)
+
+dygraph(closePrices, main = "Percent", group = "stock") %>%
+  dyRebase(percent = TRUE) %>%
+  dyRangeSelector(dateWindow = dateWindow)
+
+dygraph(closePrices, main = "None", group = "stock") %>%
+  dyRangeSelector(dateWindow = dateWindow)
+```
+
+The three graphs, representing different meanings of the stock, can be manipulated using the range selector at the same time, so we can easily check the informations.
+
+### Conclusion
+
+* The package **dygrphs** is a great package of data visualizations, especially using the time series objects
+* The functions in the packages is added as layer, just as the package 'ggplot2'.
+* Before using the package to create the graph, users have to be familiar with the time series object, which is a multiple vector with x-value time.
+* The color and the path of the graph is also similar to 'ggplot2'.
+* For me the most powerful tool in the package is the range selecter, and the data information changed by mouse.
+
+### Reference
+
+* Great R packages for data import, wrangling and visualization. [https://www.computerworld.com/article/2921176/business-intelligence/great-r-packages-for-data-import-wrangling-visualization.html](https://www.computerworld.com/article/2921176/business-intelligence/great-r-packages-for-data-import-wrangling-visualization.html)
+* Tutorial: [https://rstudio.github.io/dygraphs/gallery-series-options.html](https://rstudio.github.io/dygraphs/gallery-series-options.html)
+* Package 'dygraphs'[https://cran.r-project.org/web/packages/dygraphs/dygraphs.pdf](https://cran.r-project.org/web/packages/dygraphs/dygraphs.pdf)
+* Data source: yahoo finance [finance.yahoo.com](finance.yahoo.com)
+* Data source: basketball reference [https://www.basketball-reference.com](https://www.basketball-reference.com)
+* Time Series object: [https://www.statmethods.net/advstats/timeseries.html](https://www.statmethods.net/advstats/timeseries.html)
+* Time Series object: [https://stat.ethz.ch/R-manual/R-devel/library/stats/html/ts.html](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/ts.html)
+* dygraphs [https://github.com/rstudio/dygraphs](https://github.com/rstudio/dygraphs)
